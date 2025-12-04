@@ -4,17 +4,15 @@ async function day4(limit: number, input?: string): Promise<number> {
   const lines = input.trim().split("\n").map((ln) => `    ${ln.trim()}    `);
   const width = lines[0].length;
   let grid = lines.join("").split("");
-  const directions = [
-    -1 * (width - 1),
-    -1 * width,
-    -1 * (width + 1),
-    -1,
+  let total = 0;
+  let directions = [
     1,
     width - 1,
     width,
     width + 1,
   ];
-  let total = 0;
+
+  directions = directions.concat(directions.map((d) => d * -1));
 
   for (let i = 0; i < limit; i++) {
     for (let i = 0; i < grid.length; i++) {
