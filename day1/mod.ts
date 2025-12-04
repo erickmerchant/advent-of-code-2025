@@ -1,4 +1,4 @@
-async function calc(
+async function day1(
   limiter: (turn: number) => number,
   input?: string,
 ): Promise<number> {
@@ -31,9 +31,9 @@ async function calc(
 }
 
 export function part1(input?: string): Promise<number> {
-  return calc((turn) => turn, input);
+  return day1((turn) => turn, input);
 }
 
 export function part2(input?: string): Promise<number> {
-  return calc(() => 1, input);
+  return day1(() => 1, input);
 }

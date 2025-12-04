@@ -1,4 +1,4 @@
-export function* main(
+export async function* main(
   ids: Array<string> = [
     "day1.part1",
     "day1.part2",
@@ -7,7 +7,7 @@ export function* main(
     "day3.part1",
     "day3.part2",
   ],
-): Generator<Promise<number>> {
+): AsyncGenerator<number> {
   const results = [];
 
   for (const id of ids) {
@@ -26,12 +26,14 @@ export function* main(
   }
 
   for (const result of results) {
-    yield result;
+    yield await result;
   }
 }
 
 if (import.meta.main) {
-  for (const line of main(Deno.args.length ? Deno.args : undefined)) {
-    console.log(await line);
+  const parts = Deno.args.length ? Deno.args : undefined;
+
+  for await (const line of main(parts)) {
+    console.log(line);
   }
 }

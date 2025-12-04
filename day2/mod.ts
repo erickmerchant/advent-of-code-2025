@@ -1,4 +1,4 @@
-async function calc(
+async function day2(
   limiter: (str: string) => [number, number?],
   input?: string,
 ): Promise<number> {
@@ -32,9 +32,9 @@ async function calc(
 }
 
 export function part1(input?: string): Promise<number> {
-  return calc((str: string) => [str.length / 2], input);
+  return day2((str: string) => [str.length / 2], input);
 }
 
 export function part2(input?: string): Promise<number> {
-  return calc((str: string) => [1, str.length], input);
+  return day2((str: string) => [1, str.length], input);
 }

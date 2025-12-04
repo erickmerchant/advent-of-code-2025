@@ -1,4 +1,4 @@
-async function calc(start_pos: number, input?: string): Promise<number> {
+async function day3(start_pos: number, input?: string): Promise<number> {
   input ??= await Deno.readTextFile("./input/day3.txt");
   let total = 0;
 
@@ -29,9 +29,9 @@ async function calc(start_pos: number, input?: string): Promise<number> {
 }
 
 export function part1(input?: string): Promise<number> {
-  return calc(2, input);
+  return day3(2, input);
 }
 
 export function part2(input?: string): Promise<number> {
-  return calc(12, input);
+  return day3(12, input);
 }
