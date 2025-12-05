@@ -51,12 +51,6 @@ export async function part2(input?: string): Promise<number> {
 
         continue loop;
       }
-
-      if (max >= rmin && max <= rmax) {
-        realRanges[i].min = min;
-
-        continue loop;
-      }
     }
 
     realRanges.push({ min, max });
