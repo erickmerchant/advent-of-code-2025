@@ -20,7 +20,7 @@ async function day2(
           str.length % j === 0 &&
           str === str.substring(0, j).repeat(str.length / j)
         ) {
-          result += +str;
+          result += i;
 
           continue loop;
         }

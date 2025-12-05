@@ -1,4 +1,24 @@
-type Range = { min: number; max: number };
+class Range {
+  min: number;
+  max: number;
+
+  get size() {
+    return this.max - this.min + 1;
+  }
+
+  constructor(min: number, max: number) {
+    this.min = min;
+    this.max = max;
+  }
+
+  includes(num: number) {
+    return num >= this.min && num <= this.max;
+  }
+
+  copy() {
+    return new Range(this.min, this.max);
+  }
+}
 
 async function day5(
   input?: string,
@@ -8,7 +28,7 @@ async function day5(
   const ranges = parts[0].trim().split("\n").map((range) => {
     const [min, max] = range.split("-").map((n) => parseInt(n, 10));
 
-    return { min, max };
+    return new Range(min, max);
   });
   const ids = parts[1].split("\n").map((n) => parseInt(n, 10));
 
@@ -21,8 +41,8 @@ export async function part1(input?: string): Promise<number> {
   let total = 0;
 
   loop: for (const id of ids) {
-    for (const { min, max } of ranges) {
-      if (id >= min && id <= max) {
+    for (const range of ranges) {
+      if (range.includes(id)) {
         total += 1;
 
         continue loop;
@@ -35,29 +55,32 @@ export async function part1(input?: string): Promise<number> {
 
 export async function part2(input?: string): Promise<number> {
   const { ranges } = await day5(input);
-  const realRanges: Array<Range> = [];
+  const normalizedRanges: Array<Range> = [];
   let total = 0;
 
-  loop: for (const { min, max } of ranges.sort((a, b) => a.min - b.min)) {
-    for (let i = 0; i < realRanges.length; i++) {
-      const { min: rmin, max: rmax } = realRanges[i];
+  loop: for (const range of ranges.sort((a, b) => a.min - b.min)) {
+    for (let i = 0; i < normalizedRanges.length; i++) {
+      const normalizedRange = normalizedRanges[i];
 
-      if (min >= rmin && min <= rmax && max >= rmin && max <= rmax) {
+      if (
+        normalizedRange.includes(range.min) &&
+        normalizedRange.includes(range.max)
+      ) {
         continue loop;
       }
 
-      if (min >= rmin && min <= rmax) {
-        realRanges[i].max = max;
+      if (normalizedRange.includes(range.min)) {
+        normalizedRanges[i].max = range.max;
 
         continue loop;
       }
     }
 
-    realRanges.push({ min, max });
+    normalizedRanges.push(range.copy());
   }
 
-  for (const { min, max } of realRanges) {
-    total += max - min + 1;
+  for (const range of normalizedRanges) {
+    total += range.size;
   }
 
   return total;
