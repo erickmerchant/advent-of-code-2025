@@ -12,6 +12,7 @@ export async function* main(
     "day5.part2",
     "day6.part1",
     "day6.part2",
+    "day7.part1",
   ],
 ): AsyncGenerator<number> {
   const results = [];
