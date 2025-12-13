@@ -110,7 +110,7 @@ export async function part2(
   candidates.sort(([a], [b]) => b - a);
 
   const results = [];
-  const size = candidates.length / 6;
+  const size = Math.ceil(candidates.length / 6);
   let id = 0;
 
   while (candidates.length) {

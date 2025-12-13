@@ -1,13 +1,19 @@
 const IDS: Array<string> = [];
+const files = await Array.fromAsync(Deno.readDir("."));
 
-for await (const file of Deno.readDir(".")) {
+files.sort((a, b) =>
+  a.name.localeCompare(b.name, undefined, {
+    numeric: true,
+    sensitivity: "base",
+  })
+);
+
+for (const file of files) {
   if (file.isDirectory && file.name.startsWith("day")) {
     IDS.push(file.name + ".part1");
     IDS.push(file.name + ".part2");
   }
 }
-
-IDS.sort();
 
 export async function* main(
   ids: Array<string> = IDS,
