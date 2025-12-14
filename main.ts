@@ -28,15 +28,19 @@ export async function* main(
 
     builder.postMessage({ id });
 
-    builder.onmessage = (e: MessageEvent<string>) => {
-      resolve(+e.data);
+    builder.onmessage = (e: MessageEvent<number>) => {
+      resolve(Number(e.data));
     };
 
     results.push(promise);
   }
 
   for (const result of results) {
-    yield await result;
+    const line = await result;
+
+    if (isFinite(line)) {
+      yield line;
+    }
   }
 }
 
