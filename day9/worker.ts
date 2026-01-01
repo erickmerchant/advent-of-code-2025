@@ -20,8 +20,6 @@ self.onmessage = (
   // const len = candidates.length;
 
   outer: while (candidates.length) {
-    // console.log(id, (i++ / len).toFixed(2));
-
     const [area, a, b] = candidates.shift()!;
     const [minX, maxX] = [a.x, b.x].toSorted(compareNumber);
     const [minY, maxY] = [a.y, b.y].toSorted(compareNumber);
