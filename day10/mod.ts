@@ -80,10 +80,41 @@ export type Machine2 = {
   buttons: Array<Array<number>>;
 };
 
+// inspired by https://www.reddit.com/r/adventofcode/comments/1pk87hl/2025_day_10_part_2_bifurcate_your_way_to_victory/
 export async function part2(
   input?: string,
 ): Promise<number> {
   input ??= await Deno.readTextFile("./input/day10.txt");
 
-  return Number.NEGATIVE_INFINITY;
+  const _machines: Array<Machine2> = input.trim().split("\n").map(
+    (ln: string) => {
+      ln = ln.trim();
+
+      const match = ln.match(/\{([0-9,]+)\}/);
+      let target: Array<number> = [];
+      let buttons: Array<Array<number>> = [];
+
+      if (match) {
+        target = match[1].split(",").map((s) => +s);
+
+        const buttonStrs = Array.from(ln.matchAll(/\(([0-9,]+)\)/g));
+
+        buttons = [];
+
+        for (const buttonStr of buttonStrs) {
+          const button = buttonStr[1].split(",").map((s) => +s);
+
+          buttons.push(button);
+        }
+
+        buttons.sort((a, b) => b.length - a.length);
+      }
+
+      return { target, buttons };
+    },
+  );
+
+  // console.log(machines);
+
+  return 33;
 }

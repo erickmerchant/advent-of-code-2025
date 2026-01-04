@@ -60,6 +60,7 @@ export async function part1(
   return findPaths(devices, "you", "out");
 }
 
+// part 2 inspired by https://todd.ginsberg.com/post/advent-of-code/2025/day11/ which caused a rewrite of part 1 as well
 export async function part2(
   input?: string,
 ): Promise<number> {

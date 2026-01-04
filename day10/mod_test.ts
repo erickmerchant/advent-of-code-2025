@@ -1,5 +1,5 @@
 import { assertEquals } from "@std/assert";
-import { part1 } from "./mod.ts";
+import { part1, part2 } from "./mod.ts";
 
 Deno.test(async function mod_test() {
   const example = `
@@ -9,5 +9,5 @@ Deno.test(async function mod_test() {
   `;
 
   assertEquals(await part1(example), 7);
-  // assertEquals(await part2(example), 33);
+  assertEquals(await part2(example), 33);
 });
