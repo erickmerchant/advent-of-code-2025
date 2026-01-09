@@ -76,9 +76,12 @@ export async function part1(
 }
 
 export type Machine2 = {
+  id: number;
   target: Array<number>;
   buttons: Array<Array<number>>;
 };
+
+const WORKER_COUNT = 4;
 
 // inspired by https://www.reddit.com/r/adventofcode/comments/1pk87hl/2025_day_10_part_2_bifurcate_your_way_to_victory/
 export async function part2(
@@ -86,8 +89,8 @@ export async function part2(
 ): Promise<number> {
   input ??= await Deno.readTextFile("./input/day10.txt");
 
-  const _machines: Array<Machine2> = input.trim().split("\n").map(
-    (ln: string) => {
+  const machines: Array<Machine2> = input.trim().split("\n").map(
+    (ln: string, id: number) => {
       ln = ln.trim();
 
       const match = ln.match(/\{([0-9,]+)\}/);
@@ -110,11 +113,55 @@ export async function part2(
         buttons.sort((a, b) => b.length - a.length);
       }
 
-      return { target, buttons };
+      return { id, target, buttons };
     },
-  );
+  ).toSorted(() => Math.random() - Math.random());
 
-  // console.log(machines);
+  let result = 0;
+  const promises = [];
+  let i = 0;
 
-  return 33;
+  while (i < WORKER_COUNT) {
+    const machine = machines.shift();
+
+    if (!machine) break;
+
+    i += 1;
+
+    const { resolve, promise } = Promise.withResolvers<void>();
+    const builder = new Worker(new URL("worker.ts", import.meta.url).href, {
+      type: "module",
+    });
+
+    builder.postMessage({
+      machine,
+    });
+
+    builder.onmessage = (
+      e: MessageEvent<{
+        id: number;
+        value: number;
+      }>,
+    ) => {
+      const parsed = e.data;
+
+      result += parsed.value;
+
+      const machine = machines.shift();
+
+      if (machine) {
+        builder.postMessage({
+          machine,
+        });
+      } else {
+        resolve();
+      }
+    };
+
+    promises.push(promise);
+  }
+
+  await Promise.all(promises);
+
+  return result;
 }
