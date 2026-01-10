@@ -11,13 +11,10 @@ self.onmessage = (
     }
   >,
 ) => {
-  // const id = e.data.id;
   const candidates = e.data.candidates;
   const verticals = e.data.verticals;
   const horizontals = e.data.horizontals;
   let largest = 0;
-  // let i = 0;
-  // const len = candidates.length;
 
   outer: while (candidates.length) {
     const [area, a, b] = candidates.shift()!;

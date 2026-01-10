@@ -39,5 +39,4 @@ Deno.test(async function mod_test() {
   `;
 
   assertEquals(await part1(example), 2);
-  // assertEquals(await part2(example2), 2);
 });

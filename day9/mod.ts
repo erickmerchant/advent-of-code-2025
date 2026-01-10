@@ -121,7 +121,6 @@ export async function part2(
     });
 
     builder.postMessage({
-      id: id++,
       candidates: slice,
       verticals,
       horizontals,
