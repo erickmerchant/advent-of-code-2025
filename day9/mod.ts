@@ -111,7 +111,6 @@ export async function part2(
 
   const results = [];
   const size = Math.ceil(candidates.length / 8);
-  let id = 0;
 
   while (candidates.length) {
     const slice = candidates.splice(0, size);
