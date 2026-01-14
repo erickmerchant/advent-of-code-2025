@@ -23,49 +23,66 @@ self.onmessage = (
     let out = false;
 
     inner: while (true) {
-      let totals: [number, number];
-      const filteredVerticals = verticals
-        .filter(([_, y2, y3]) =>
-          ((minY + 1) > y2 && (minY + 1) < y3) ||
-          ((maxY - 1) > y2 && (maxY - 1) < y3)
-        );
+      const filteredVerticals1 = verticals
+        .filter(([_, y2, y3]) => ((minY + 1) > y2 && (minY + 1) < y3));
+      const filteredVerticals2 = verticals
+        .filter(([_, y2, y3]) => ((maxY - 1) > y2 && (maxY - 1) < y3));
 
       for (let x = minX + 1; x < maxX; x++) {
-        totals = filteredVerticals
-          .reduce((acc, [x2, y2, y3]) => [
-            acc[0] + (
-              (x2 < x && (minY + 1) > y2 && (minY + 1) < y3) ? 1 : 0
-            ),
-            acc[1] + (
-              (x2 < x && (maxY - 1) > y2 && (maxY - 1) < y3) ? 1 : 0
-            ),
-          ], [0, 0]);
+        let total: number;
 
-        if (totals[0] % 2 === 0 || totals[1] % 2 === 0) {
+        total = filteredVerticals1
+          .reduce((acc, [x2]) =>
+            acc + (
+              x2 < x ? 1 : 0
+            ), 0);
+
+        if (total % 2 === 0) {
+          out = true;
+
+          break inner;
+        }
+
+        total = filteredVerticals2
+          .reduce((acc, [x2]) =>
+            acc + (
+              x2 < x ? 1 : 0
+            ), 0);
+
+        if (total % 2 === 0) {
           out = true;
 
           break inner;
         }
       }
 
-      const filteredHorizontals = horizontals
-        .filter(([_, x2, x3]) =>
-          ((minX + 1) > x2 && (minX + 1) < x3) ||
-          ((maxX - 1) > x2 && (maxX - 1) < x3)
-        );
+      const filteredHorizontals1 = horizontals
+        .filter(([_, x2, x3]) => ((minX + 1) > x2 && (minX + 1) < x3));
+      const filteredHorizontals2 = horizontals
+        .filter(([_, x2, x3]) => ((maxX - 1) > x2 && (maxX - 1) < x3));
 
       for (let y = minY + 1; y < maxY; y++) {
-        totals = filteredHorizontals
-          .reduce((acc, [y2, x2, x3]) => [
-            acc[0] + (
-              (y2 < y && (minX + 1) > x2 && (minX + 1) < x3) ? 1 : 0
-            ),
-            acc[1] + (
-              (y2 < y && (maxX - 1) > x2 && (maxX - 1) < x3) ? 1 : 0
-            ),
-          ], [0, 0]);
+        let total: number;
 
-        if (totals[0] % 2 === 0 || totals[1] % 2 === 0) {
+        total = filteredHorizontals1
+          .reduce((acc, [y2]) =>
+            acc + (
+              (y2 < y) ? 1 : 0
+            ), 0);
+
+        if (total % 2 === 0) {
+          out = true;
+
+          break inner;
+        }
+
+        total = filteredHorizontals2
+          .reduce((acc, [y2]) =>
+            acc + (
+              (y2 < y) ? 1 : 0
+            ), 0);
+
+        if (total % 2 === 0) {
           out = true;
 
           break inner;
