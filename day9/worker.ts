@@ -22,7 +22,7 @@ self.onmessage = (
     const [minY, maxY] = [a.y, b.y].toSorted(compareNumber);
     let out = false;
 
-    inner: while (true) {
+    inner: {
       const filteredVerticals1 = verticals
         .filter(([_, y2, y3]) => ((minY + 1) > y2 && (minY + 1) < y3));
       const filteredVerticals2 = verticals
