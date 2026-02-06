@@ -109,33 +109,82 @@ export async function part2(
 
   candidates.sort(([a], [b]) => b - a);
 
-  const results = [];
-  const size = Math.ceil(candidates.length / 8);
-
   while (candidates.length) {
-    const slice = candidates.splice(0, size);
-    const { resolve, promise } = Promise.withResolvers<number>();
-    const builder = new Worker(new URL("worker.ts", import.meta.url).href, {
-      type: "module",
-    });
+    const [area, a, b] = candidates.shift()!;
+    const [minX, maxX] = [a.x, b.x].toSorted(compareNumber);
+    const [minY, maxY] = [a.y, b.y].toSorted(compareNumber);
 
-    builder.postMessage({
-      candidates: slice,
-      verticals,
-      horizontals,
-    });
+    inner: {
+      let filtered: Array<[number, number, number]>;
 
-    builder.onmessage = (e: MessageEvent<string>) => {
-      resolve(+e.data);
-    };
+      filtered = verticals;
 
-    results.push(promise);
-  }
+      for (let x = maxX - 1; x >= minX + 1; x--) {
+        const newFiltered = [];
+        let total1: number = 0;
+        let total2: number = 0;
 
-  for (const result of results) {
-    const largest = await result;
+        for (const f of filtered) {
+          const [x2, y2, y3] = f;
 
-    if (largest > 0) return largest;
+          if (
+            (((minY + 1) > y2 && (minY + 1) < y3) ||
+              (maxY - 1) > y2 && (maxY - 1) < y3) && (x2 < x)
+          ) {
+            newFiltered.push(f);
+
+            if ((minY + 1) > y2 && (minY + 1) < y3) {
+              total1 += 1;
+            }
+
+            if ((maxY - 1) > y2 && (maxY - 1) < y3) {
+              total2 += 1;
+            }
+          }
+        }
+
+        if (total1 % 2 === 0 || total2 % 2 === 0) {
+          break inner;
+        }
+
+        filtered = newFiltered;
+      }
+
+      filtered = horizontals;
+
+      for (let y = maxY - 1; y >= minY + 1; y--) {
+        const newFiltered = [];
+        let total1: number = 0;
+        let total2: number = 0;
+
+        for (const f of filtered) {
+          const [y2, x2, x3] = f;
+
+          if (
+            (((minX + 1) > x2 && (minX + 1) < x3) ||
+              (maxX - 1) > x2 && (maxX - 1) < x3) && (y2 < y)
+          ) {
+            newFiltered.push(f);
+
+            if ((minX + 1) > x2 && (minX + 1) < x3) {
+              total1 += 1;
+            }
+
+            if ((maxX - 1) > x2 && (maxX - 1) < x3) {
+              total2 += 1;
+            }
+          }
+        }
+
+        if (total1 % 2 === 0 || total2 % 2 === 0) {
+          break inner;
+        }
+
+        filtered = newFiltered;
+      }
+
+      return area;
+    }
   }
 
   return 0;
