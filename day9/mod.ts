@@ -93,7 +93,7 @@ export async function part2(
     ]);
   }
 
-  const candidates: Array<[number, Coord, Coord]> = [];
+  let candidates: Array<[number, Coord, Coord]> = [];
 
   for (let i = 0; i < points.length; i++) {
     const a = points[i];
@@ -107,10 +107,15 @@ export async function part2(
     }
   }
 
-  candidates.sort(([a], [b]) => b - a);
+  candidates.sort(([a], [b]) => a - b);
 
-  while (candidates.length) {
+  let result = 0;
+
+  outer: while (candidates.length) {
     const [area, a, b] = candidates.shift()!;
+
+    if (area <= result) continue;
+
     const [minX, maxX] = [a.x, b.x].toSorted(compareNumber);
     const [minY, maxY] = [a.y, b.y].toSorted(compareNumber);
 
@@ -183,9 +188,22 @@ export async function part2(
         filtered = newFiltered;
       }
 
-      return area;
+      if (area > result) result = area;
+
+      continue outer;
     }
+
+    candidates = candidates.filter(([_, a2, b2]) => {
+      const [minX2, maxX2] = [a2.x, b2.x].toSorted(compareNumber);
+      const [minY2, maxY2] = [a2.y, b2.y].toSorted(compareNumber);
+
+      if (minX2 < minX && maxX2 > maxX && minY2 < minY && maxY2 > maxY) {
+        return false;
+      }
+
+      return true;
+    });
   }
 
-  return 0;
+  return result;
 }

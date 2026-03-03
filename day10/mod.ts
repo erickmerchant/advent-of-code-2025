@@ -76,7 +76,6 @@ export async function part1(
 }
 
 export type Machine2 = {
-  id: number;
   target: Array<number>;
   buttons: Array<Array<number>>;
 };
@@ -115,11 +114,12 @@ export async function part2(
 
       return { id, target, buttons };
     },
-  ).toSorted(() => Math.random() - Math.random());
+  );
 
   let result = 0;
   const promises = [];
   let i = 0;
+  const cache: Map<string, number> = new Map();
 
   while (i < WORKER_COUNT) {
     const machine = machines.shift();
@@ -135,6 +135,7 @@ export async function part2(
 
     builder.postMessage({
       machine,
+      cache,
     });
 
     builder.onmessage = (
@@ -152,6 +153,7 @@ export async function part2(
       if (machine) {
         builder.postMessage({
           machine,
+          cache,
         });
       } else {
         resolve();

@@ -1,30 +1,28 @@
 import { Machine2 } from "./mod.ts";
 
-type Permutation = {
-  current: Array<number>;
-  length: number;
-  latest?: number;
-};
-
 self.onmessage = (
   e: MessageEvent<
     {
       machine: Machine2;
+      cache: Map<string, number>;
     }
   >,
 ) => {
   const machine = e.data.machine;
+  const cache = e.data.cache;
 
-  const result = process(machine);
+  const result = process(machine, cache);
 
   postMessage({
-    id: machine.id,
     value: result,
   });
 };
 
-function process(machine: Machine2): number {
-  const subResults = [];
+function process(machine: Machine2, cache: Map<string, number>): number {
+  let result = Infinity;
+  const cached = cache.get(JSON.stringify(machine));
+
+  if (cached) return cached;
 
   for (
     const combo of combos(
@@ -44,27 +42,31 @@ function process(machine: Machine2): number {
     }
 
     if (!target.some((t) => t !== 0)) {
-      subResults.push(combo.length);
+      if (combo.length < result) result = combo.length;
     } else if (!target.some((t) => t % 2 === 1)) {
       const halfTarget = target.map((n) => n / 2);
 
       const subResult = combo.length +
-        (process({ ...machine, target: halfTarget }) * 2);
+        (process({ ...machine, target: halfTarget }, cache) * 2);
 
-      subResults.push(subResult);
+      if (subResult < result) {
+        result = subResult;
+      }
     }
   }
 
-  const result = Math.min(...subResults);
+  cache.set(JSON.stringify(machine), result);
 
   return result;
 }
 
-function* combos<T>(
-  arr: Array<T>,
-  remaining: Array<T> = arr,
-  current: Array<T> = [],
-): Iterable<Array<T>> {
+type NumArrArr = Array<Array<number>>;
+
+function* combos(
+  arr: NumArrArr,
+  remaining: NumArrArr = arr,
+  current: NumArrArr = [],
+): Iterable<NumArrArr> {
   if (remaining.length === 0) {
     yield current;
 
