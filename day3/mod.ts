@@ -1,5 +1,6 @@
 async function day3(start_pos: number, input?: string): Promise<number> {
   input ??= await Deno.readTextFile("./input/day3.txt");
+
   let total = 0;
 
   for (const line of input.trim().split("\n")) {

@@ -11,6 +11,7 @@ export async function part1(
   input?: string,
 ): Promise<number> {
   input ??= await Deno.readTextFile("./input/day9.txt");
+
   let largest = 0;
 
   const points: Array<Coord> = input.trim().split("\n").map(

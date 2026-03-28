@@ -116,10 +116,10 @@ export async function part2(
     },
   );
 
-  let result = 0;
   const promises = [];
-  let i = 0;
   const cache: Map<string, number> = new Map();
+  let result = 0;
+  let i = 0;
 
   while (i < WORKER_COUNT) {
     const machine = machines.shift();

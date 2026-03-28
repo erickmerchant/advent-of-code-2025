@@ -24,6 +24,7 @@ async function day5(
   input?: string,
 ): Promise<{ ranges: Array<Range>; ids: Array<number> }> {
   input ??= await Deno.readTextFile("./input/day5.txt");
+
   const parts = input.split("\n\n");
   const ranges = parts[0].trim().split("\n").map((range) => {
     const [min, max] = range.split("-").map((n) => parseInt(n, 10));
